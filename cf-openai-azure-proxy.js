@@ -1,15 +1,15 @@
 // The name of your Azure OpenAI Resource.
-const resourceName=RESOURCE_NAME
+const resourceName="RESOURCE_NAME"
 
 // The deployment name you chose when you deployed the model.
 const mapper = {
-    'gpt-3.5-turbo': DEPLOY_NAME_GPT35,
-    'gpt-3.5-turbo-16k': DEPLOY_NAME_GPT35_16K,
-    'gpt-4': DEPLOY_NAME_GPT4,
-    'gpt-4-32k': DEPLOY_NAME_GPT4_32K,
+    'gpt-3.5-turbo': 'gpt-35-turbo',
+    'gpt-3.5-turbo-16k': 'gpt-35-turbo-16k',
+    'gpt-4': 'gpt-4',
+    'gpt-4-32k': 'gpt-4-32k',
 };
 
-const apiVersion="2023-08-01-preview"
+const apiVersion="2023-07-01-preview"
 
 addEventListener("fetch", (event) => {
   event.respondWith(handleRequest(event.request));
@@ -18,6 +18,13 @@ addEventListener("fetch", (event) => {
 async function handleRequest(request) {
   if (request.method === 'OPTIONS') {
     return handleOPTIONS(request)
+  }
+
+  // If the request method is not POST, return a 405 error.
+  if (request.method !== 'POST') {
+    return new Response("Method Not Allowed", {
+      status: 405
+    });
   }
 
   const url = new URL(request.url);
@@ -162,9 +169,8 @@ async function handleOPTIONS(request) {
     return new Response(null, {
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Access-Control-Allow-Headers': '*'
       }
     })
 }
-
